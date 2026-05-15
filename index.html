@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Check User</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:'Outfit',sans-serif;
+    background:#0d0d1a;
+    overflow:hidden;
+}
+
+/* BACKGROUND */
+.bg{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(
+        180deg,
+        #0d0d2b,
+        #2d1b4e,
+        #f0a06a
+    );
+}
+
+/* CARD */
+.card{
+    width:360px;
+    padding:35px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.3);
+    color:white;
+    position:relative;
+    z-index:10;
+}
+
+/* TITLE */
+h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+/* INPUT */
+.input{
+    position:relative;
+    margin:12px 0;
+}
+
+.input input{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.1);
+    color:white;
+    outline:none;
+}
+
+.input input::placeholder{
+    color:#ddd;
+}
+
+.input i{
+    position:absolute;
+    right:10px;
+    top:14px;
+    color:white;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    color:white;
+    font-size:15px;
+    margin-top:10px;
+}
+
+.login-btn{
+    background:linear-gradient(135deg,#7c3aed,#3b82f6);
+}
+
+/* MESSAGE */
+#message{
+    margin-top:15px;
+    text-align:center;
+    font-size:14px;
+}
+
+.success{
+    color:#4ade80;
+}
+
+.error{
+    color:#f87171;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="card">
+
+    <h2>Check User</h2>
+
+    <div class="input">
+        <input
+            type="text"
+            id="oldName"
+            placeholder="Current Name"
+        >
+        <i class="fa-solid fa-user"></i>
+    </div>
+
+    <div class="input">
+        <input
+            type="text"
+            id="oldemaill"
+            placeholder="Enter Email"
+        >
+        <i class="fa-solid fa-envelope"></i>
+    </div>
+
+    <div class="input">
+        <input
+            type="password"
+            id="oldpassword"
+            placeholder="Enter Password"
+        >
+        <i class="fa-solid fa-lock"></i>
+    </div>
+
+    <button
+        class="login-btn"
+        onclick="checkUser()"
+    >
+        Check User
+    </button>
+
+    <div id="message"></div>
+
+</div>
+
+<script>
+
+const API = "https://sheetdb.io/api/v1/x3mqc5d3c7d88";
+
+// CHECK USER
+async function checkUser(){
+
+    const oldName =
+        document.getElementById("oldName").value.trim();
+
+    const oldemaill =
+        document.getElementById("oldemaill").value.trim();
+
+    const oldpassword =
+        document.getElementById("oldpassword").value.trim();
+
+    // VALIDATION
+    if(!oldName || !oldemaill || !oldpassword){
+        showMessage("Please fill all fields","error");
+        return;
+    }
+
+    try{
+
+        const response = await fetch(API);
+        const data = await response.json();
+
+        const user = data.find(item =>
+            item.NAME === oldName &&
+            item.EMAIL === oldemaill &&
+            item.PASSWORD === oldpassword
+        );
+
+        if(user){
+
+            showMessage("Correct User","success");
+
+            // GO TO UPDATE PAGE
+            setTimeout(() => {
+                window.location.href =
+                "https://at397988-dev.github.io/update/";
+            }, 1000);
+
+        }else{
+
+            showMessage("Wrong Name Email Or Password","error");
+
+        }
+
+    }catch(error){
+
+        console.log(error);
+        showMessage("Server Error","error");
+
+    }
+}
+
+// MESSAGE FUNCTION
+function showMessage(text,type){
+    const message = document.getElementById("message");
+    message.className = type;
+    message.innerText = text;
+}
+
+</script>
+
+</body>
+</html>
